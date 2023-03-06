@@ -1,40 +1,40 @@
+from typing import List, NamedTuple
+
+
+class Option(NamedTuple):
+    name: str
+    values: List[str]
+
+
+class Kernel(NamedTuple):
+    arg_types: List[str]
+    return_type: str
+
+
 class FunctionDefinition(object):
-
-    def __init__(self, name: str, description: str):
-        pass
-
-    @property
-    def name() -> str:
-        return ""
-
-    @property
-    def description() -> str:
-        return ""
+    def __init__(
+        self, name: str, description: str, options: List[Option], kernels: List[Kernel]
+    ):
+        self.name = name
+        self.description = description
+        self.options = options
+        self.kernels = kernels
 
     @property
-    def options():
+    def details(self):
         return []
-    
-    def find_option(name: str):
-        return None
-    
+
     @property
-    def details():
-        return []
-    
-    @property
-    def kernels():
-        return []
-    
-    @property
-    def properties():
-        return 
-    
+    def properties(self):
+        return
+
+
 class FunctionBuilder(object):
-
-    def __init__(self, name: str): 
+    def __init__(self, name: str):
         self.name = name
         self.description: str = None
+        self.options = {}
+        self.kernels = []
 
     def set_description(self, description: str):
         self.description = description
@@ -43,7 +43,39 @@ class FunctionBuilder(object):
         if self.description is None:
             self.description = description
 
+    def note_option(self, name: str, values: List[str]):
+        if name in self.options:
+            existing_values = self.options[name]
+            if existing_values != values:
+                raise Exception(
+                    f"In the function {self.name} the option {name} had choices {existing_values} but we now encountered choices {values}"
+                )
+        else:
+            self.options[name] = values
+
+    def note_kernel(self, arg_types: List[str], return_type: str):
+        self.kernels.append(Kernel(arg_types, return_type))
+
     def finish(self) -> FunctionDefinition:
         if self.description is None:
             self.description = "Description is missing and would go here"
-        return FunctionDefinition(self.name, self.description)
+        opts = []
+        for key, values in self.options.items():
+            opts.append(Option(key, values))
+        return FunctionDefinition(self.name, self.description, opts, self.kernels)
+
+
+class LibraryBuilder(object):
+    def __init__(self):
+        self.functions = {}
+
+    def get_function(self, name):
+        if name not in self.functions:
+            self.functions[name] = FunctionBuilder(name)
+        return self.functions[name]
+
+    def finish(self) -> List[FunctionDefinition]:
+        built_functions = []
+        for func_name in sorted(self.functions.keys()):
+            built_functions.append(self.functions[func_name].finish())
+        return built_functions
