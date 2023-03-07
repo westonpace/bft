@@ -1,4 +1,7 @@
 {
     "python.formatting.provider": "black",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "yaml.schemas": {
+        "file:///Users/weston/source/repos/bft/tools/schema/casefile.yaml": "cases/**"
+    }
 }

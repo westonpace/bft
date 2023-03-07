@@ -1,0 +1,92 @@
+function: add
+group:
+  id: basic
+  description: Basic examples without any special cases
+args:
+  - value: 120
+    type: i8
+  - value: 5
+    type: i8
+result:
+  value: 125
+  type: i8
+---
+function: add
+group:
+  id: overflow
+  description: Examples demonstrating overflow behavior
+args:
+  - value: 120
+    type: i8
+  - value: 10
+    type: i8
+options:
+  overflow: ERROR
+result:
+  special: error
+---
+function: add
+group: overflow
+args:
+  - value: 120
+    type: i8
+  - value: 10
+    type: i8
+options:
+  overflow: SATURATE
+result:
+  value: 127
+  type: i8
+---
+function: add
+group: overflow
+args:
+  - value: -120
+    type: i8
+  - value: -10
+    type: i8
+options:
+  overflow: SATURATE
+result:
+  value: -128
+  type: i8
+---
+function: add
+group: overflow
+args:
+  - value: 120
+    type: i8
+  - value: 10
+    type: i8
+options:
+  overflow: SILENT
+result:
+  special: undefined
+---
+function: add
+group:
+  id: rounding
+  description: Examples demonstrating floating point rounding behavior
+args:
+  - value: 4.5
+    type: float32
+  - value: 2.5000007152557373046875
+    type: float32
+options:
+  rounding: TIE_TO_EVEN
+result:
+  value: 7.00000095367431640625
+  type: float32
+---
+function: add
+group: rounding
+args:
+  - value: 4.5
+    type: float32
+  - value: 2.5000007152557373046875
+    type: float32
+options:
+  rounding: FLOOR
+result:
+  value: 7.000000476837158203125
+  type: float32
