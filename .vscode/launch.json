@@ -8,8 +8,10 @@
             "name": "Python: Module",
             "type": "python",
             "request": "launch",
-            "env": {"PYTHONPATH": "${workspaceFolder}"},
-            "module": "bft.substrait.extension_file_parser",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "module": "bft.core.cases",
             "justMyCode": true
         }
     ]

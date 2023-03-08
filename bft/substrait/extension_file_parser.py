@@ -48,7 +48,7 @@ class ExtensionFileVisitor(object):
 
     def __fail(self, err):
         loc = "/".join(self.location_stack)
-        raise Exception(f"Error visition extension file.  Location={loc} Message={err}")
+        raise Exception(f"Error visiting extension file.  Location={loc} Message={err}")
 
     def __visit_list(self, visitor, obj, attr, required=False):
         if attr in obj:
