@@ -11,7 +11,7 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             },
-            "module": "bft.core.cases",
+            "module": "bft.runners.sqlite.runner",
             "justMyCode": true
         }
     ]

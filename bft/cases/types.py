@@ -12,15 +12,18 @@ class CaseGroup(NamedTuple):
 
 
 class Case(NamedTuple):
-    function: str
     group: CaseGroup
     args: List[CaseLiteral]
     result: CaseLiteral | Literal["error", "undefined"]
     options: Dict[str, str]
 
 
-class ProtoCase(NamedTuple):
+class CaseFile(NamedTuple):
     function: str
+    cases: List[Case]
+
+
+class ProtoCase(NamedTuple):
     group: str
     args: List[CaseLiteral]
     result: CaseLiteral | Literal["error", "undefined"]

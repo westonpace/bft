@@ -8,7 +8,7 @@ try:
 except ImportError:
     from yaml import SafeDumper, SafeLoader
 
-from .types import Case, CaseGroup, CaseLiteral, ProtoCase
+from .types import Case, CaseFile, CaseGroup, CaseLiteral, ProtoCase
 
 
 class CaseFileVisitor(object):
@@ -22,7 +22,7 @@ class CaseFileVisitor(object):
                 "A case referred to group {case.group} which was not defined in the file"
             )
         grp = self.__groups[case.group]
-        return Case(case.function, grp, case.args, case.result, case.options)
+        return Case(grp, case.args, case.result, case.options)
 
     def __fail(self, err):
         loc = "/".join(self.__location_stack)
@@ -90,23 +90,24 @@ class CaseFileVisitor(object):
         return special
 
     def visit_case(self, case):
-        func_name = self.__get_or_die(case, "function")
+        print(dir(case))
         grp = self.__get_or_die(case, "group")
         if not isinstance(grp, str):
             grp = self.visit_group(grp)
         result = self.__visit_or_die(self.visit_result, case, "result")
         args = self.__visit_list(self.visit_literal, case, "args")
         opts = self.__get_or_else(case, "options", {})
-        return ProtoCase(func_name, grp, args, result, opts)
+        return ProtoCase(grp, args, result, opts)
 
-    def visit_cases(self, cases):
-        protos = []
-        for case in cases:
-            protos.append(self.visit_case(case))
-        return [self.__resolve_proto_case(c) for c in protos]
+    def visit_case_file(self, case_file):
+        func_name = self.__get_or_die(case_file, "function")
+        proto_cases = self.__visit_list(self.visit_case, case_file, "cases")
+        cases = [self.__resolve_proto_case(c) for c in proto_cases]
+        return CaseFile(func_name, cases)
 
 
 class CaseFileParser(object):
-    def parse(self, f: BinaryIO) -> List[Case]:
-        cases = yaml.load_all(f, SafeLoader)
-        return CaseFileVisitor().visit_cases(cases)
+    def parse(self, f: BinaryIO) -> List[CaseFile]:
+        case_files = yaml.load_all(f, SafeLoader)
+        visitor = CaseFileVisitor()
+        return [visitor.visit_case_file(cf) for cf in case_files]
