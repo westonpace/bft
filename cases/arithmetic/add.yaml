@@ -79,3 +79,14 @@ cases:
     result:
       value: 7.000000476837158203125
       type: float32
+  - group:
+      id: types
+      description: Examples demonstrating behavior of different data types
+    args:
+      - value: 4.5
+        type: float64
+      - value: 2.5000007152557373046875
+        type: float64
+    result:
+      value: 7.0000007152557373046875
+      type: float64

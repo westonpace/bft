@@ -5,7 +5,8 @@ from typing import Dict, List, NamedTuple
 import yaml
 
 try:
-    from yaml import CSafeLoader as SafeLoader, CSafeDumper as SafeDumper
+    from yaml import CSafeDumper as SafeDumper
+    from yaml import CSafeLoader as SafeLoader
 except ImportError:
     from yaml import SafeLoader, SafeDumper
 
@@ -133,32 +134,4 @@ def add_extensions_file_to_library(ext_file: ExtensionsFile, library: LibraryBui
                     arg_types.append(arg.type)
                 else:
                     arg_types.append("|".join(arg.options))
-            builder.note_kernel(arg_types, impl.return_type)
-
-
-library = LibraryBuilder()
-with open(
-    "/home/pace/dev/substrait/extensions/functions_arithmetic.yaml",
-    mode="rb",
-) as f:
-    ext_file = ExtensionFileParser().parse(f)
-    add_extensions_file_to_library(ext_file, library)
-
-built_funcs = library.finish()
-for func in built_funcs:
-    print(f"Name: {func.name}")
-    print("------" + (len(func.name) * "-"))
-    print(f"Desc: {func.description}")
-    print(f"Options:")
-    for opt in func.options:
-        print(f" {opt.name}: [" + ", ".join(opt.values) + "]")
-    print(f"Kernels:")
-    for kernel in func.kernels:
-        print(
-            f" - {func.name}("
-            + ",".join(kernel.arg_types)
-            + ") -> "
-            + kernel.return_type
-        )
-    print()
-    print()
+            builder.note_kernel(arg_types, impl.return_type, impl.options.keys())

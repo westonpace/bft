@@ -9,6 +9,7 @@ class Option(NamedTuple):
 class Kernel(NamedTuple):
     arg_types: List[str]
     return_type: str
+    available_options: List[str]
 
 
 class FunctionDefinition(object):
@@ -53,8 +54,8 @@ class FunctionBuilder(object):
         else:
             self.options[name] = values
 
-    def note_kernel(self, arg_types: List[str], return_type: str):
-        self.kernels.append(Kernel(arg_types, return_type))
+    def note_kernel(self, arg_types: List[str], return_type: str, available_options: List[str]):
+        self.kernels.append(Kernel(arg_types, return_type, available_options))
 
     def finish(self) -> FunctionDefinition:
         if self.description is None:

@@ -1,0 +1,14 @@
+name: sqlite
+type: sql
+scalar_functions:
+  - name: add
+    local_name: +
+    infix: True
+    required_options:
+      overflow: SILENT
+      rounding: TIE_TO_EVEN
+    unsupported_kernels:
+      - args:
+          - float32
+          - float32
+        result: float32
